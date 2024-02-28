@@ -8,11 +8,11 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     private Graphics2D g2d;
     private boolean resizing = false;
     private int mouseX, mouseY;
-    private JButton button = new JButton();
+    private final JButton button = new JButton();
 
     public Canvas() {
         initializeCanvas(640, 480);
-        setupButton();
+        resizeButton();
     }
 
     private void initializeCanvas(int width, int height) {
@@ -24,8 +24,8 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         addMouseMotionListener(this);
     }
 
-    private void setupButton() {
-        button.setBounds(image.getWidth()-10, image.getHeight()-10, 10, 10);
+    private void resizeButton() {
+        button.setBounds(image.getWidth() - 10, image.getHeight() - 10, 10, 10);
         button.addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
                 if (resizing) {
@@ -40,12 +40,14 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
                 }
             }
         });
+
         button.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 resizing = true;
                 mouseX = e.getXOnScreen();
                 mouseY = e.getYOnScreen();
             }
+
             public void mouseReleased(MouseEvent e) {
                 resizing = false;
             }
@@ -62,9 +64,8 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g.dispose();
         image = newImage;
         g2d = image.createGraphics();
-        button.setBounds(newWidth-10, newHeight-10, 10, 10);
+        button.setBounds(newWidth - 10, newHeight - 10, 10, 10);
         repaint();
-        revalidate();
     }
 
     private void fillCanvas(Color color) {
@@ -89,21 +90,23 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
     }
 
+    @Override
+    public void mouseMoved(MouseEvent e) {
+    }
 
     @Override
-    public void mouseMoved(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    }
 
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
     @Override
-    public void mouseEntered(MouseEvent e) {}
-
-    @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
     public Graphics2D getG2d() {
         return g2d;
