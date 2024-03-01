@@ -10,6 +10,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     private boolean resizing = false;
     private int mouseX, mouseY;
     private final JButton button = new JButton();
+    Color firstColor = Color.BLACK;
+    Color secondColor = Color.WHITE;
+
 
     public Canvas() {
         initializeCanvas(1366, 768);
@@ -20,13 +23,24 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = image.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        fillCanvas(Color.WHITE);
-        setLayout(null); // Pozwala na ręczne umieszczanie komponentów
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0,0, width, height);
+        updateCanvasColors();
+        setLayout(null);
         addMouseListener(this);
         addMouseMotionListener(this);
-        g2d.setColor(Color.GREEN);
         g2d.setStroke(new BasicStroke(10));
     }
+
+    public void updateCanvasColors() {
+        Workspace workspace = getWorkspace();
+        if (workspace != null) {
+            Color firstColor = workspace.getFirstColor();
+            Color secondColor = workspace.getSecondColor();
+            g2d.setPaint(firstColor);
+        }
+    }
+
 
     private void resizeButton() {
         button.setBounds(image.getWidth() - 10, image.getHeight() - 10, 10, 10);
@@ -62,19 +76,26 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     private void resizeCanvas(int newWidth, int newHeight) {
         BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = newImage.createGraphics();
-        g.setColor(Color.WHITE);
+        g.setColor(Color.WHITE); // Ustawienie domyślnego koloru tła dla nowego obszaru
         g.fillRect(0, 0, newWidth, newHeight);
         g.drawImage(image, 0, 0, null);
         g.dispose();
         image = newImage;
         g2d = image.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Ponowne ustawienie właściwości pędzla
+        updateCanvasProperties();
+
         button.setBounds(newWidth - 10, newHeight - 10, 10, 10);
         repaint();
     }
 
-    private void fillCanvas(Color color) {
-        g2d.setPaint(color);
-        g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
+    private void updateCanvasProperties() {
+        // Przywrócenie koloru, grubości linii itp.
+        g2d.setColor(firstColor); // Ustaw kolor, który chcesz używać do rysowania
+        g2d.setStroke(new BasicStroke(10)); // Przykładowa grubość linii
+        // Możesz dodać więcej właściwości zgodnie z potrzebami
     }
 
     @Override

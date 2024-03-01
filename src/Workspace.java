@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
 
 public class Workspace extends JFrame {
@@ -14,6 +15,10 @@ public class Workspace extends JFrame {
     private final Color defaultColor = UIManager.getColor("Panel.background");
     private Canvas canvas;
     private JButton selectedToolButton = null;
+    private Color firstColor = Color.BLACK;
+    private Color secondColor = Color.WHITE;
+
+
 
 
     public Workspace() {
@@ -56,13 +61,42 @@ public class Workspace extends JFrame {
     }
 
     private void setupToolsPanel() {
+
         JPanel toolsPanel = new JPanel();
         toolsPanel.setBackground(new Color(227,227,227));
         toolsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
         toolsPanel.add(createTool("Brush", "src/brush.png", e -> activateBrush()));
         toolsPanel.add(createTool("Eraser", "src/eraser.png", e -> activateEraser()));
-        add(toolsPanel, BorderLayout.NORTH);
+
+
+        JPanel colorPanel = new JPanel();
+        colorPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
+
+        JButton firstColorButton = new JButton("");
+        JButton secondColorButton = new JButton("");
+
+        firstColorButton.setBackground(firstColor);
+        secondColorButton.setBackground(secondColor);
+
+        firstColorButton.addActionListener(e -> {
+            firstColor = JColorChooser.showDialog(null, "Choose a first color", firstColor);
+            firstColorButton.setBackground(firstColor);
+            canvas.updateCanvasColors();
+        });
+
+        secondColorButton.addActionListener(e -> {
+            secondColor = JColorChooser.showDialog(null, "Choose a second color", secondColor);
+            secondColorButton.setBackground(secondColor);
+            canvas.updateCanvasColors();
+        });
+
+        colorPanel.add(firstColorButton);
+        colorPanel.add(secondColorButton);
+        toolsPanel.add(colorPanel);
+        this.add(toolsPanel, BorderLayout.NORTH);
+
     }
+
 
 
 
@@ -112,8 +146,21 @@ public class Workspace extends JFrame {
 
     }
 
+    public Color getFirstColor() {
+        return firstColor;
+    }
 
+    public Color getSecondColor() {
+        return secondColor;
+    }
 
+    public void setFirstColor(Color firstColor) {
+        this.firstColor = firstColor;
+    }
+
+    public void setSecondColor(Color secondColor) {
+        this.secondColor = secondColor;
+    }
 
 
 }
