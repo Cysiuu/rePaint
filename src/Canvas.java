@@ -35,22 +35,20 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     public void updateCanvasColors() {
         Workspace workspace = getWorkspace();
         if (workspace != null) {
-            Color firstColor = workspace.getFirstColor();
-            Color secondColor = workspace.getSecondColor();
+             firstColor = workspace.getFirstColor();
+             secondColor = workspace.getSecondColor();
             g2d.setPaint(firstColor);
         }
     }
-
 
     private void resizeButton() {
         button.setBounds(image.getWidth() - 10, image.getHeight() - 10, 10, 10);
         button.addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
                 if (resizing) {
-                    // Oblicz nowe wymiary na podstawie przeciągania myszy
                     int dx = e.getXOnScreen() - mouseX;
                     int dy = e.getYOnScreen() - mouseY;
-                    int newWidth = Math.max(image.getWidth() + dx, 10); // Ograniczenie minimalnego rozmiaru
+                    int newWidth = Math.max(image.getWidth() + dx, 10);
                     int newHeight = Math.max(image.getHeight() + dy, 10);
                     resizeCanvas(newWidth, newHeight);
                     mouseX += dx;
@@ -65,7 +63,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
                 mouseX = e.getXOnScreen();
                 mouseY = e.getYOnScreen();
             }
-
             public void mouseReleased(MouseEvent e) {
                 resizing = false;
             }
@@ -74,28 +71,25 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void resizeCanvas(int newWidth, int newHeight) {
+
         BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = newImage.createGraphics();
-        g.setColor(Color.WHITE); // Ustawienie domyślnego koloru tła dla nowego obszaru
+        g.setColor(Color.WHITE);
         g.fillRect(0, 0, newWidth, newHeight);
         g.drawImage(image, 0, 0, null);
         g.dispose();
         image = newImage;
         g2d = image.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // Ponowne ustawienie właściwości pędzla
         updateCanvasProperties();
-
         button.setBounds(newWidth - 10, newHeight - 10, 10, 10);
         repaint();
+
     }
 
     private void updateCanvasProperties() {
-        // Przywrócenie koloru, grubości linii itp.
-        g2d.setColor(firstColor); // Ustaw kolor, który chcesz używać do rysowania
-        g2d.setStroke(new BasicStroke(10)); // Przykładowa grubość linii
-        // Możesz dodać więcej właściwości zgodnie z potrzebami
+        g2d.setColor(firstColor);
+        g2d.setStroke(new BasicStroke(10));
     }
 
     @Override
@@ -104,40 +98,26 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g.drawImage(image, 0, 0, this);
     }
 
-
+    //Methods not used for implementation but required by the interface
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
+    public void mousePressed(MouseEvent e) {}
     @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
+    public void mouseReleased(MouseEvent e) {}
     @Override
-    public void mouseDragged(MouseEvent e) {
-    }
-
+    public void mouseDragged(MouseEvent e) {}
     @Override
-    public void mouseMoved(MouseEvent e) {
-    }
-
+    public void mouseMoved(MouseEvent e) {}
     @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
+    public void mouseClicked(MouseEvent e) {}
     @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
+    public void mouseEntered(MouseEvent e) {}
     @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mouseExited(MouseEvent e) {}
+
 
     public Graphics2D getG2d() {
         return g2d;
     }
-
     public Workspace getWorkspace() {
         return (Workspace) SwingUtilities.getWindowAncestor(this);
     }
