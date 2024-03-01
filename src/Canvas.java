@@ -2,8 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.nio.file.Path;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener {
+
+    private static Canvas instance;
 
     private BufferedImage image;
     private Graphics2D g2d;
@@ -20,6 +24,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void initializeCanvas(int width, int height) {
+        instance = this;
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = image.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -33,7 +38,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
 
     public void updateCanvasColors() {
-        Workspace workspace = getWorkspace();
+        Workspace workspace = Workspace.getInstance();
         if (workspace != null) {
              firstColor = workspace.getFirstColor();
              secondColor = workspace.getSecondColor();
@@ -86,10 +91,17 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         repaint();
 
     }
+    public void clearCanvas() {
+        g2d.setPaint(Color.WHITE);
+        g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
+        g2d.setPaint(firstColor);
+        repaint();
+    }
 
     private void updateCanvasProperties() {
         g2d.setColor(firstColor);
         g2d.setStroke(new BasicStroke(10));
+        button.setBounds(image.getWidth() - 10, image.getHeight() - 10, 10, 10);
     }
 
     @Override
@@ -118,8 +130,23 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     public Graphics2D getG2d() {
         return g2d;
     }
-    public Workspace getWorkspace() {
-        return (Workspace) SwingUtilities.getWindowAncestor(this);
+
+
+
+    public BufferedImage getImage() {
+        return image;
     }
 
+    public static Canvas getInstance() {
+
+        return instance;
+    }
+
+    public void setImage(BufferedImage image) {
+        this.image = image;
+        g2d = image.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        updateCanvasProperties();
+        repaint();
+    }
 }

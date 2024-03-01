@@ -37,11 +37,10 @@ public class Eraser implements MouseMotionListener, MouseListener {
 
     private void draw(MouseEvent e){
         Graphics2D g2d;
-        if (canvas.getWorkspace().getSelectedTool() == Workspace.Tool.ERASER) {
+        if (Workspace.getInstance().getSelectedTool() == Workspace.Tool.ERASER) {
             g2d = canvas.getG2d();
-            g2d.setPaint(canvas.getWorkspace().getSecondColor());
+            g2d.setPaint(Workspace.getInstance().getSecondColor());
             g2d.drawLine(lastXPositionOfCursor, lastYPositionOfCursor, e.getX(), e.getY());
-            g2d.fillOval(e.getX() - 5, e.getY() - 5, 10, 10);
             canvas.repaint();
             lastXPositionOfCursor = e.getX();
             lastYPositionOfCursor = e.getY();

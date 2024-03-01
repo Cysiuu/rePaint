@@ -1,7 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 
@@ -15,16 +17,15 @@ public class Workspace extends JFrame {
     private final Color highlightedColor = new Color(173, 216, 230); // Light blue
     private final Color defaultColor = UIManager.getColor("Panel.background");
     private Canvas canvas;
-    private JButton selectedToolButton = null;
+    private static Workspace instance;
     private Color firstColor = Color.BLACK;
     private Color secondColor = Color.WHITE;
     private HashMap<JButton, Tool> buttonToolMap;
-
-
-
-
+    private FileManagement fileManagment = new FileManagement();
 
     public Workspace() {
+        instance = this;
+        setTitle(fileManagment.updateTitle());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1366, 768);
         setupOptionBar();
@@ -43,14 +44,33 @@ public class Workspace extends JFrame {
     private void setupOptionBar() {
         setJMenuBar(menuBar);
         JMenu fileMenu = new JMenu("File");
+
         JMenuItem newMenuItem = new JMenuItem("New");
+        newMenuItem.addActionListener(e -> {
+            Canvas.getInstance().clearCanvas();
+            setTitle(fileManagment.updateTitle());
+            fileManagment.setPathToActualFile(null);
+        });
+
+
         JMenuItem openMenuItem = new JMenuItem("Open");
+        openMenuItem.addActionListener(e -> {
+            fileManagment.openFile(this);
+            setTitle(fileManagment.updateTitle());
+        });
+
         JMenuItem saveMenuItem = new JMenuItem("Save");
+        saveMenuItem.addActionListener(e -> {
+            fileManagment.saveFile(this);
+            setTitle(fileManagment.updateTitle());
+        });
+
         fileMenu.add(newMenuItem);
         fileMenu.add(openMenuItem);
         fileMenu.add(saveMenuItem);
         menuBar.add(fileMenu);
     }
+
 
     private void setupCanvas() {
         canvas = new Canvas();
@@ -64,22 +84,43 @@ public class Workspace extends JFrame {
     }
 
     private void setupToolsPanel() {
+
         buttonToolMap = new HashMap<JButton, Tool>();
         JPanel toolsPanel = new JPanel();
-        toolsPanel.setBackground(new Color(227,227,227));
-        toolsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
-        toolsPanel.add(createTool("Brush", "src/brush.png", Tool.BRUSH));
-        toolsPanel.add(createTool("Eraser", "src/eraser.png", Tool.ERASER));
+        toolsPanel.setBackground(UIManager.getColor("Panel.background"));
+
+        toolsPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(5, 5, 5, 5); // marginesy
+
+        gbc.gridx = 0; // Kolumna 0
+        gbc.gridy = 0; // Rząd 0
+        toolsPanel.add(createTool("Brush", "src/brush.png", Tool.BRUSH), gbc);
+
+        gbc.gridx = 1; // Kolumna 1
+        gbc.gridy = 0; // Rząd 0
+        toolsPanel.add(createTool("Eraser", "src/eraser.png", Tool.ERASER), gbc);
 
 
-        JPanel colorPanel = new JPanel();
-        colorPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
 
-        JButton firstColorButton = new JButton("");
-        JButton secondColorButton = new JButton("");
-
+        JPanel firstColorPanel = new JPanel();
+        firstColorPanel.setLayout(new BoxLayout(firstColorPanel, BoxLayout.Y_AXIS));
+        JButton firstColorButton = new JButton();
         firstColorButton.setBackground(firstColor);
-        secondColorButton.setBackground(secondColor);
+        firstColorButton.setPreferredSize(new Dimension(30,30));
+        firstColorButton.setMaximumSize(firstColorButton.getPreferredSize());
+        firstColorButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel firstColorLabel = new JLabel("Color 1");
+        firstColorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        firstColorPanel.add(firstColorButton);
+        firstColorPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        firstColorPanel.add(firstColorLabel);
+
 
         firstColorButton.addActionListener(e -> {
             firstColor = JColorChooser.showDialog(null, "Choose a first color", firstColor);
@@ -87,21 +128,45 @@ public class Workspace extends JFrame {
             canvas.updateCanvasColors();
         });
 
+        gbc.gridx = 2; // Col 2
+        gbc.gridy = 0; // Row 0
+        toolsPanel.add(firstColorPanel, gbc);
+
+        JPanel secondColorPanel = new JPanel();
+        secondColorPanel.setLayout(new BoxLayout(secondColorPanel, BoxLayout.Y_AXIS));
+
+        JButton secondColorButton = new JButton();
+        secondColorButton.setBackground(secondColor);
+        secondColorButton.setPreferredSize(new Dimension(30,30));
+        secondColorButton.setMaximumSize(secondColorButton.getPreferredSize());
+        secondColorButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel secondColorLabel = new JLabel("Color 2");
+        secondColorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        secondColorPanel.add(secondColorButton);
+        secondColorPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        secondColorPanel.add(secondColorLabel);
+
         secondColorButton.addActionListener(e -> {
             secondColor = JColorChooser.showDialog(null, "Choose a second color", secondColor);
             secondColorButton.setBackground(secondColor);
             canvas.updateCanvasColors();
         });
 
-        colorPanel.add(firstColorButton);
-        colorPanel.add(secondColorButton);
-        toolsPanel.add(colorPanel);
+        gbc.gridx = 3; // Col 3
+        gbc.gridy = 0; // Row 0
+        toolsPanel.add(secondColorPanel, gbc);
+
+        //Invisible element that takes all the space
+        gbc.gridx = 4;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        toolsPanel.add(Box.createHorizontalGlue(), gbc);
+
         this.add(toolsPanel, BorderLayout.NORTH);
 
     }
-
-
-
 
     private JPanel createTool(String toolName, String iconPath, Tool toolType) {
         JPanel panel = new JPanel();
@@ -150,7 +215,7 @@ public class Workspace extends JFrame {
 
     public void actionPerfomed(ActionEvent e){
         selectedTool = buttonToolMap.get(e.getSource());
-        selectedToolButton = (JButton) e.getSource();
+        JButton selectedToolButton = (JButton) e.getSource();
         for (JButton button : buttonToolMap.keySet()) {
             if (button == selectedToolButton) {
                 button.setBackground(highlightedColor);
@@ -160,6 +225,11 @@ public class Workspace extends JFrame {
         }
     }
 
-
+    public boolean checkIfFileExists(Path path) {
+        return Files.exists(path);
+    }
+    public static Workspace getInstance() {
+        return instance;
+    }
 
 }
