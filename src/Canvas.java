@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener {
+
     private BufferedImage image;
     private Graphics2D g2d;
     private boolean resizing = false;
@@ -11,17 +12,20 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     private final JButton button = new JButton();
 
     public Canvas() {
-        initializeCanvas(640, 480);
+        initializeCanvas(1366, 768);
         resizeButton();
     }
 
     private void initializeCanvas(int width, int height) {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = image.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         fillCanvas(Color.WHITE);
         setLayout(null); // Pozwala na ręczne umieszczanie komponentów
         addMouseListener(this);
         addMouseMotionListener(this);
+        g2d.setColor(Color.GREEN);
+        g2d.setStroke(new BasicStroke(10));
     }
 
     private void resizeButton() {
@@ -82,6 +86,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void mousePressed(MouseEvent e) {
+
     }
 
     @Override
@@ -111,4 +116,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     public Graphics2D getG2d() {
         return g2d;
     }
+
+    public Workspace getWorkspace() {
+        return (Workspace) SwingUtilities.getWindowAncestor(this);
+    }
+
 }

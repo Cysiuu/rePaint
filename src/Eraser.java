@@ -3,15 +3,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-public class Brush implements MouseMotionListener, MouseListener {
+public class Eraser implements MouseMotionListener, MouseListener {
     private final Canvas canvas;
     Graphics2D g2d;
 
     int lastX,lastY;
-    public Brush(Canvas canvas) {
+    public Eraser(Canvas canvas) {
         this.canvas = canvas;
         canvas.addMouseMotionListener(this);
         g2d = canvas.getG2d();
+
+
     }
     @Override
     public void mousePressed(MouseEvent e) {
@@ -48,7 +50,7 @@ public class Brush implements MouseMotionListener, MouseListener {
     }
 
     private void draw(MouseEvent e){
-        if (canvas.getWorkspace().getSelectedTool() == Workspace.Tool.BRUSH) {
+        if (canvas.getWorkspace().getSelectedTool() == Workspace.Tool.ERASER) {
             g2d.drawLine(lastX, lastY, e.getX(), e.getY());
             g2d.fillOval(e.getX() - 5, e.getY() - 5, 10, 10);
             canvas.repaint();
