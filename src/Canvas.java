@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.nio.file.Path;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener {
 
@@ -16,10 +14,12 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     private final JButton button = new JButton();
     Color firstColor = Color.BLACK;
     Color secondColor = Color.WHITE;
+    private int width = 640;
+    private int height = 480;
 
 
     public Canvas() {
-        initializeCanvas(1366, 768);
+            initializeCanvas(width, height);
         resizeButton();
     }
 
@@ -47,7 +47,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void resizeButton() {
-        button.setBounds(image.getWidth() - 10, image.getHeight() - 10, 10, 10);
+        button.setBounds(image.getWidth() , image.getHeight() , 10, 10);
         button.addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
                 if (resizing) {
@@ -58,6 +58,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
                     resizeCanvas(newWidth, newHeight);
                     mouseX += dx;
                     mouseY += dy;
+                    button.setBounds(image.getWidth() , image.getHeight() , 10, 10);
                 }
             }
         });
@@ -92,6 +93,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
     }
     public void clearCanvas() {
+        this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        g2d = image.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setPaint(Color.WHITE);
         g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
         g2d.setPaint(firstColor);
@@ -138,7 +142,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
 
     public static Canvas getInstance() {
-
         return instance;
     }
 

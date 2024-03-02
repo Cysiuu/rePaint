@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -22,6 +21,7 @@ public class Workspace extends JFrame {
     private Color secondColor = Color.WHITE;
     private HashMap<JButton, Tool> buttonToolMap;
     private FileManagement fileManagment = new FileManagement();
+    Filters filter = new Filters();
 
     public Workspace() {
         instance = this;
@@ -68,7 +68,24 @@ public class Workspace extends JFrame {
         fileMenu.add(newMenuItem);
         fileMenu.add(openMenuItem);
         fileMenu.add(saveMenuItem);
+
+        JMenu Filters = new JMenu("Filter");
+        JMenuItem grayscale = new JMenuItem("Grayscale");
+        JMenuItem sepia = new JMenuItem("Sepia");
+
+        Filters.add(grayscale);
+        Filters.add(sepia);
+
+        grayscale.addActionListener(e -> {
+            filter.grayScaleFilter("grayscale");
+        });
+
+        sepia.addActionListener(e -> {
+            filter.sepiaFilter("sepia");
+        });
+
         menuBar.add(fileMenu);
+        menuBar.add(Filters);
     }
 
 
@@ -94,14 +111,14 @@ public class Workspace extends JFrame {
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 5, 5, 5); // marginesy
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-        gbc.gridx = 0; // Kolumna 0
-        gbc.gridy = 0; // Rząd 0
+        gbc.gridx = 0; // Col 0
+        gbc.gridy = 0; // Row 0
         toolsPanel.add(createTool("Brush", "src/brush.png", Tool.BRUSH), gbc);
 
-        gbc.gridx = 1; // Kolumna 1
-        gbc.gridy = 0; // Rząd 0
+        gbc.gridx = 1; // Col 1
+        gbc.gridy = 0; // Row 0
         toolsPanel.add(createTool("Eraser", "src/eraser.png", Tool.ERASER), gbc);
 
 
@@ -225,9 +242,6 @@ public class Workspace extends JFrame {
         }
     }
 
-    public boolean checkIfFileExists(Path path) {
-        return Files.exists(path);
-    }
     public static Workspace getInstance() {
         return instance;
     }

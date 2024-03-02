@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class FileManagement {
 
-    private Path pathToActualFile; // Zmienna dla ścieżki aktualnie otwartego pliku
+    private Path pathToActualFile;
     private final JFileChooser fileChooser = new JFileChooser();
 
     public FileManagement() {
@@ -22,8 +22,8 @@ public class FileManagement {
             pathToActualFile = file.toPath();
             try {
                 BufferedImage image = ImageIO.read(file);
-                Canvas.getInstance().setImage(image); // Załóżmy, że Canvas ma metodę setImage
-                Canvas.getInstance().repaint(); // Odświeżanie canvas
+                Canvas.getInstance().setImage(image);
+                Canvas.getInstance().repaint();
             } catch (IOException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(frame, "Error opening the file", "Error", JOptionPane.ERROR_MESSAGE);

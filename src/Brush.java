@@ -17,8 +17,6 @@ public class Brush implements MouseMotionListener, MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
         draw(e);
-
-
     }
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -35,17 +33,14 @@ public class Brush implements MouseMotionListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     private void draw(MouseEvent e){
