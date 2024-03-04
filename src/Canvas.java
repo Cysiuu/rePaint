@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.Stack;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener {
 
@@ -152,4 +153,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         updateCanvasProperties();
         repaint();
     }
+
+
 }

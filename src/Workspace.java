@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Workspace extends JFrame {
     public enum Tool {
-        BRUSH, ERASER;
+        BRUSH, ERASER, BUCKET
     }
     private Tool selectedTool;
     private final JMenuBar menuBar = new JMenuBar();
@@ -39,6 +39,7 @@ public class Workspace extends JFrame {
     private void setupTools() {
         Brush brush = new Brush(canvas);
         Eraser eraser = new Eraser(canvas);
+        Bucket bucket = new Bucket(canvas);
     }
 
     private void setupOptionBar() {
@@ -115,11 +116,13 @@ public class Workspace extends JFrame {
 
         gbc.gridx = 0; // Col 0
         gbc.gridy = 0; // Row 0
-        toolsPanel.add(createTool("Brush", "src/brush.png", Tool.BRUSH), gbc);
-
+        toolsPanel.add(createTool("Brush", "brush.png", Tool.BRUSH), gbc);
         gbc.gridx = 1; // Col 1
         gbc.gridy = 0; // Row 0
-        toolsPanel.add(createTool("Eraser", "src/eraser.png", Tool.ERASER), gbc);
+        toolsPanel.add(createTool("Eraser", "eraser.png", Tool.ERASER), gbc);
+        gbc.gridx = 2; // Col 2
+        gbc.gridy = 0; // Row 0
+        toolsPanel.add(createTool("Bucket", "bucket.png", Tool.BUCKET), gbc);
 
 
 
@@ -145,7 +148,7 @@ public class Workspace extends JFrame {
             canvas.updateCanvasColors();
         });
 
-        gbc.gridx = 2; // Col 2
+        gbc.gridx = 3; // Col 2
         gbc.gridy = 0; // Row 0
         toolsPanel.add(firstColorPanel, gbc);
 
@@ -171,12 +174,12 @@ public class Workspace extends JFrame {
             canvas.updateCanvasColors();
         });
 
-        gbc.gridx = 3; // Col 3
+        gbc.gridx = 4; // Col 3
         gbc.gridy = 0; // Row 0
         toolsPanel.add(secondColorPanel, gbc);
 
         //Invisible element that takes all the space
-        gbc.gridx = 4;
+        gbc.gridx = 5;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         toolsPanel.add(Box.createHorizontalGlue(), gbc);
