@@ -1,4 +1,4 @@
-package MainLogic;
+package org.MainLogic;
 
 import javax.swing.*;
 import java.awt.*;

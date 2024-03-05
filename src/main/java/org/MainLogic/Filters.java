@@ -1,4 +1,4 @@
-package MainLogic;
+package org.MainLogic;
 
 import java.awt.image.BufferedImage;
 

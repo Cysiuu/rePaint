@@ -1,4 +1,4 @@
-package MainLogic;
+package org.MainLogic;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

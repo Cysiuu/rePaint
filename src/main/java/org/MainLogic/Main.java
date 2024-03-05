@@ -1,4 +1,4 @@
-package MainLogic;
+package org.MainLogic;
 
 public class Main {
     public static void main(String[] args) {

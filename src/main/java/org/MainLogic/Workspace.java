@@ -1,12 +1,15 @@
-package MainLogic;
+package org.MainLogic;
 
-import Tools.Brush;
-import Tools.Bucket;
-import Tools.Eraser;
+import org.Tools.Brush;
+import org.Tools.Bucket;
+import org.Tools.Eraser;
+
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 
 
@@ -115,11 +118,13 @@ public class Workspace extends JFrame {
         gbc.insets = new Insets(5, 5, 5, 5);
 
         setGbc(0, 0, gbc);
-        toolsPanel.add(createTool("Brush", "Icons/brush.png", Tool.BRUSH), gbc);
+
+
+        toolsPanel.add(createTool("Brush", "brush.png", Tool.BRUSH), gbc);
         setGbc(1, 0, gbc);
-        toolsPanel.add(createTool("Eraser", "Icons/eraser.png", Tool.ERASER), gbc);
+        toolsPanel.add(createTool("Eraser", "eraser.png", Tool.ERASER), gbc);
         setGbc(2, 0, gbc);
-        toolsPanel.add(createTool("Bucket", "Icons/bucket.png", Tool.BUCKET), gbc);
+        toolsPanel.add(createTool("Bucket", "bucket.png", Tool.BUCKET), gbc);
 
 
 
@@ -211,7 +216,9 @@ public class Workspace extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         JLabel label = new JLabel(toolName);
         label.setHorizontalAlignment(JLabel.CENTER);
-        ImageIcon icon = new ImageIcon(iconPath);
+        URL resource = getClass().getClassLoader().getResource(iconPath);
+        assert resource != null;
+        ImageIcon icon = new ImageIcon(resource);
         JButton button = new JButton(icon);
         buttonToolMap.put(button,toolType);
         button.setFocusable(false);
