@@ -1,3 +1,5 @@
+package MainLogic;
+
 import java.awt.image.BufferedImage;
 
 public class Filters {
@@ -32,21 +34,9 @@ public class Filters {
                     int newRed = (int)(0.393*r + 0.769*g + 0.189*b);
                     int newGreen = (int)(0.349*r + 0.686*g + 0.168*b);
                     int newBlue = (int)(0.272*r + 0.534*g + 0.131*b);
-                    if (newRed > 255) {
-                        r = 255;
-                    } else {
-                        r = newRed;
-                    }
-                    if (newGreen > 255) {
-                        g = 255;
-                    } else {
-                        g = newGreen;
-                    }
-                    if (newBlue > 255) {
-                        b = 255;
-                    } else {
-                        b = newBlue;
-                    }
+                    r = Math.min(newRed, 255);
+                    g = Math.min(newGreen, 255);
+                    b = Math.min(newBlue, 255);
                     p = (a<<24) | (r<<16) | (g<<8) | b;
                     image.setRGB(x, y, p);
                 }
@@ -54,6 +44,4 @@ public class Filters {
             Canvas.getInstance().setImage(image);
         }
     }
-
-
 }

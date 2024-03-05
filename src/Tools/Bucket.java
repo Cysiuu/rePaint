@@ -1,3 +1,7 @@
+package Tools;
+import MainLogic.Canvas;
+import MainLogic.Workspace;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

@@ -1,8 +1,12 @@
+package MainLogic;
+
+import Tools.Brush;
+import Tools.Bucket;
+import Tools.Eraser;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 
 
@@ -20,26 +24,26 @@ public class Workspace extends JFrame {
     private Color firstColor = Color.BLACK;
     private Color secondColor = Color.WHITE;
     private HashMap<JButton, Tool> buttonToolMap;
-    private FileManagement fileManagment = new FileManagement();
+    private final FileManagement fileManagement = new FileManagement();
     Filters filter = new Filters();
 
     public Workspace() {
         instance = this;
-        setTitle(fileManagment.updateTitle());
+        setTitle(fileManagement.updateTitle());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1366, 768);
+        setupCanvas();
         setupOptionBar();
         setupToolBar();
-        setupCanvas();
         setupTools();
         setVisible(true);
     }
 
 
     private void setupTools() {
-        Brush brush = new Brush(canvas);
-        Eraser eraser = new Eraser(canvas);
-        Bucket bucket = new Bucket(canvas);
+          new Brush(canvas);
+          new Eraser(canvas);
+          new Bucket(canvas);
     }
 
     private void setupOptionBar() {
@@ -48,22 +52,22 @@ public class Workspace extends JFrame {
 
         JMenuItem newMenuItem = new JMenuItem("New");
         newMenuItem.addActionListener(e -> {
-            Canvas.getInstance().clearCanvas();
-            setTitle(fileManagment.updateTitle());
-            fileManagment.setPathToActualFile(null);
+            fileManagement.NewFile(this);
+            setTitle(fileManagement.updateTitle());
+            fileManagement.setPathToActualFile(null);
         });
 
 
         JMenuItem openMenuItem = new JMenuItem("Open");
         openMenuItem.addActionListener(e -> {
-            fileManagment.openFile(this);
-            setTitle(fileManagment.updateTitle());
+            fileManagement.openFile(this);
+            setTitle(fileManagement.updateTitle());
         });
 
         JMenuItem saveMenuItem = new JMenuItem("Save");
         saveMenuItem.addActionListener(e -> {
-            fileManagment.saveFile(this);
-            setTitle(fileManagment.updateTitle());
+            fileManagement.saveFile(this);
+            setTitle(fileManagement.updateTitle());
         });
 
         fileMenu.add(newMenuItem);
@@ -77,13 +81,9 @@ public class Workspace extends JFrame {
         Filters.add(grayscale);
         Filters.add(sepia);
 
-        grayscale.addActionListener(e -> {
-            filter.grayScaleFilter("grayscale");
-        });
+        grayscale.addActionListener(e -> filter.grayScaleFilter("grayscale"));
 
-        sepia.addActionListener(e -> {
-            filter.sepiaFilter("sepia");
-        });
+        sepia.addActionListener(e -> filter.sepiaFilter("sepia"));
 
         menuBar.add(fileMenu);
         menuBar.add(Filters);
@@ -103,7 +103,7 @@ public class Workspace extends JFrame {
 
     private void setupToolsPanel() {
 
-        buttonToolMap = new HashMap<JButton, Tool>();
+        buttonToolMap = new HashMap<>();
         JPanel toolsPanel = new JPanel();
         toolsPanel.setBackground(UIManager.getColor("Panel.background"));
 
@@ -114,15 +114,12 @@ public class Workspace extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        gbc.gridx = 0; // Col 0
-        gbc.gridy = 0; // Row 0
-        toolsPanel.add(createTool("Brush", "brush.png", Tool.BRUSH), gbc);
-        gbc.gridx = 1; // Col 1
-        gbc.gridy = 0; // Row 0
-        toolsPanel.add(createTool("Eraser", "eraser.png", Tool.ERASER), gbc);
-        gbc.gridx = 2; // Col 2
-        gbc.gridy = 0; // Row 0
-        toolsPanel.add(createTool("Bucket", "bucket.png", Tool.BUCKET), gbc);
+        setGbc(0, 0, gbc);
+        toolsPanel.add(createTool("Brush", "Icons/brush.png", Tool.BRUSH), gbc);
+        setGbc(1, 0, gbc);
+        toolsPanel.add(createTool("Eraser", "Icons/eraser.png", Tool.ERASER), gbc);
+        setGbc(2, 0, gbc);
+        toolsPanel.add(createTool("Bucket", "Icons/bucket.png", Tool.BUCKET), gbc);
 
 
 
@@ -148,8 +145,7 @@ public class Workspace extends JFrame {
             canvas.updateCanvasColors();
         });
 
-        gbc.gridx = 3; // Col 2
-        gbc.gridy = 0; // Row 0
+        setGbc(3, 0, gbc);
         toolsPanel.add(firstColorPanel, gbc);
 
         JPanel secondColorPanel = new JPanel();
@@ -174,12 +170,33 @@ public class Workspace extends JFrame {
             canvas.updateCanvasColors();
         });
 
-        gbc.gridx = 4; // Col 3
-        gbc.gridy = 0; // Row 0
+        setGbc(4, 0, gbc);
         toolsPanel.add(secondColorPanel, gbc);
 
+
+        setGbc(5, 0, gbc);
+        JPanel sliderPanel = new JPanel();
+        sliderPanel.setLayout(new BoxLayout(sliderPanel, BoxLayout.Y_AXIS));
+
+        JSlider slider = new JSlider(1, 50, canvas.getStroke());
+        slider.setPreferredSize(new Dimension(100, 30));
+        JLabel sliderLabel = new JLabel("Size: "+slider.getValue());
+
+        sliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sliderLabel.setHorizontalAlignment(JLabel.CENTER);
+        slider.addChangeListener(e -> {
+            canvas.updateStroke(new BasicStroke(slider.getValue(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            sliderLabel.setText("Size: " + slider.getValue());
+        });
+
+        sliderPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        sliderPanel.add(sliderLabel);
+        sliderPanel.add(slider);
+
+        toolsPanel.add(sliderPanel, gbc);
+
         //Invisible element that takes all the space
-        gbc.gridx = 5;
+        setGbc(6, 0, gbc);
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         toolsPanel.add(Box.createHorizontalGlue(), gbc);
@@ -201,7 +218,7 @@ public class Workspace extends JFrame {
         button.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         button.setContentAreaFilled(false);
         button.setOpaque(true);
-        button.addActionListener(this::actionPerfomed);
+        button.addActionListener(this::actionPerformed);
         panel.add(button);
         panel.add(label);
         return panel;
@@ -212,11 +229,6 @@ public class Workspace extends JFrame {
         return selectedTool;
     }
 
-    public Tool setSelectedTool(Tool tool) {
-        return selectedTool = tool;
-    }
-
-
     public Color getFirstColor() {
         return firstColor;
     }
@@ -225,15 +237,13 @@ public class Workspace extends JFrame {
         return secondColor;
     }
 
-    public void setFirstColor(Color firstColor) {
-        this.firstColor = firstColor;
+
+    public void setGbc(int col, int row, GridBagConstraints gbc){
+        gbc.gridx = col;
+        gbc.gridy = row;
     }
 
-    public void setSecondColor(Color secondColor) {
-        this.secondColor = secondColor;
-    }
-
-    public void actionPerfomed(ActionEvent e){
+    public void actionPerformed(ActionEvent e){
         selectedTool = buttonToolMap.get(e.getSource());
         JButton selectedToolButton = (JButton) e.getSource();
         for (JButton button : buttonToolMap.keySet()) {

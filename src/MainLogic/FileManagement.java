@@ -1,3 +1,5 @@
+package MainLogic;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -15,6 +17,12 @@ public class FileManagement {
         pathToActualFile = null;
     }
 
+    public void NewFile(JFrame frame) {
+        Canvas.getInstance().clearCanvas();
+        frame.setTitle(updateTitle());
+        pathToActualFile = null;
+    }
+
     public void openFile(JFrame frame) {
         int result = fileChooser.showOpenDialog(frame);
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -25,7 +33,6 @@ public class FileManagement {
                 Canvas.getInstance().setImage(image);
                 Canvas.getInstance().repaint();
             } catch (IOException e) {
-                e.printStackTrace();
                 JOptionPane.showMessageDialog(frame, "Error opening the file", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -56,13 +63,8 @@ public class FileManagement {
             ImageIO.write(Canvas.getInstance().getImage(), "PNG", file);
             pathToActualFile = file.toPath();
         } catch (IOException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(frame, "Error saving the file", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public Path getPathToActualFile() {
-        return pathToActualFile;
     }
 
     public void setPathToActualFile(Path pathToActualFile) {
@@ -74,4 +76,6 @@ public class FileManagement {
         String fileName = pathToActualFile != null ? pathToActualFile.getFileName().toString() : "untitled.png";
         return appName + " - " + fileName;
     }
+
+
 }

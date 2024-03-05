@@ -1,22 +1,26 @@
+package MainLogic;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.util.Stack;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener {
 
     private static Canvas instance;
-
     private BufferedImage image;
     private Graphics2D g2d;
     private boolean resizing = false;
     private int mouseX, mouseY;
     private final JButton button = new JButton();
-    Color firstColor = Color.BLACK;
-    Color secondColor = Color.WHITE;
-    private int width = 640;
-    private int height = 480;
+    public Color firstColor = Color.BLACK;
+    public Color secondColor = Color.WHITE;
+    private final int width = 640;
+    private final int height = 480;
+
+    private final int strokeSize = 5;
+
+    private Stroke stroke = new BasicStroke(strokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
 
     public Canvas() {
@@ -35,7 +39,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         setLayout(null);
         addMouseListener(this);
         addMouseMotionListener(this);
-        g2d.setStroke(new BasicStroke(10));
+        g2d.setStroke(stroke);
     }
 
     public void updateCanvasColors() {
@@ -89,7 +93,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g2d = image.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         updateCanvasProperties();
-        button.setBounds(newWidth - 10, newHeight - 10, 10, 10);
+        button.setBounds(newWidth, newHeight, 10, 10);
         repaint();
 
     }
@@ -100,13 +104,16 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g2d.setPaint(Color.WHITE);
         g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
         g2d.setPaint(firstColor);
+        g2d.setStroke(stroke);
+        updateCanvasProperties();
         repaint();
     }
 
     private void updateCanvasProperties() {
         g2d.setColor(firstColor);
-        g2d.setStroke(new BasicStroke(10));
-        button.setBounds(image.getWidth() - 10, image.getHeight() - 10, 10, 10);
+        g2d.setStroke(stroke);
+        button.setBounds(image.getWidth(), image.getHeight(), 10, 10);
+
     }
 
     @Override
@@ -136,7 +143,13 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         return g2d;
     }
 
-
+    public void updateStroke(Stroke stroke) {
+        this.stroke = stroke;
+        g2d.setStroke(stroke);
+    }
+    public int getStroke() {
+        return strokeSize;
+    }
 
     public BufferedImage getImage() {
         return image;
