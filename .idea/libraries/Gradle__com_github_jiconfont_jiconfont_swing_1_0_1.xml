@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.jiconfont:jiconfont-swing:1.0.1" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="com.github.jiconfont" artifactId="jiconfont-swing" version="1.0.1" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.jiconfont/jiconfont-swing/1.0.1/14621054d72340b4a664cce4710ba974a3882a19/jiconfont-swing-1.0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

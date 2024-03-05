@@ -9,8 +9,8 @@ import java.nio.file.Path;
 
 public class FileManagement {
 
-    private Path pathToActualFile;
     private final JFileChooser fileChooser = new JFileChooser();
+    private Path pathToActualFile;
 
     public FileManagement() {
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));

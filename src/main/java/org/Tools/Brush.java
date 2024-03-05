@@ -2,6 +2,7 @@ package org.Tools;
 
 import org.MainLogic.Canvas;
 import org.MainLogic.Workspace;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -11,7 +12,8 @@ public class Brush implements MouseMotionListener, MouseListener {
     private final Canvas canvas;
     Graphics2D g2d;
 
-    int lastX,lastY;
+    int lastX, lastY;
+
     public Brush(Canvas canvas) {
         this.canvas = canvas;
         canvas.addMouseMotionListener(this);
@@ -22,13 +24,16 @@ public class Brush implements MouseMotionListener, MouseListener {
     public void mousePressed(MouseEvent e) {
         draw(e);
     }
+
     @Override
     public void mouseClicked(MouseEvent e) {
     }
+
     @Override
     public void mouseDragged(MouseEvent e) {
         draw(e);
     }
+
     @Override
     public void mouseMoved(MouseEvent e) {
         lastX = e.getX();
@@ -47,7 +52,7 @@ public class Brush implements MouseMotionListener, MouseListener {
     public void mouseExited(MouseEvent e) {
     }
 
-    private void draw(MouseEvent e){
+    private void draw(MouseEvent e) {
         if (Workspace.getInstance().getSelectedTool() == Workspace.Tool.BRUSH) {
             g2d = canvas.getG2d();
             g2d.setPaint(Workspace.getInstance().getFirstColor());

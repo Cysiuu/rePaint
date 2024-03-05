@@ -12,20 +12,25 @@ public class Eraser implements MouseMotionListener, MouseListener {
     private final Canvas canvas;
 
     int lastXPositionOfCursor, lastYPositionOfCursor;
+
     public Eraser(Canvas canvas) {
         this.canvas = canvas;
         canvas.addMouseMotionListener(this);
     }
+
     @Override
     public void mousePressed(MouseEvent e) {
         draw(e);
     }
+
     @Override
     public void mouseDragged(MouseEvent e) {
         draw(e);
     }
+
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    }
 
     @Override
     public void mouseMoved(MouseEvent e) {
@@ -34,13 +39,18 @@ public class Eraser implements MouseMotionListener, MouseListener {
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {}
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-    @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+    }
 
-    private void draw(MouseEvent e){
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+
+    private void draw(MouseEvent e) {
         Graphics2D g2d;
         if (Workspace.getInstance().getSelectedTool() == Workspace.Tool.ERASER) {
             g2d = canvas.getG2d();

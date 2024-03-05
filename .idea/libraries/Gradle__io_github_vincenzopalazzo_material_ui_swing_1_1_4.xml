@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: io.github.vincenzopalazzo:material-ui-swing:1.1.4" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="io.github.vincenzopalazzo" artifactId="material-ui-swing" version="1.1.4" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.vincenzopalazzo/material-ui-swing/1.1.4/7ffd6b12bb9a171c72d0b88434f5c7a8213dad82/material-ui-swing-1.1.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

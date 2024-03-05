@@ -4,31 +4,27 @@ import org.Tools.Brush;
 import org.Tools.Bucket;
 import org.Tools.Eraser;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
 
 public class Workspace extends JFrame {
-    public enum Tool {
-        BRUSH, ERASER, BUCKET
-    }
-    private Tool selectedTool;
+    private static Workspace instance;
     private final JMenuBar menuBar = new JMenuBar();
     private final JToolBar toolBar = new JToolBar();
     private final Color highlightedColor = new Color(173, 216, 230); // Light blue
     private final Color defaultColor = UIManager.getColor("Panel.background");
+    private final FileManagement fileManagement = new FileManagement();
+    private final Font font = new Font("Roboto", Font.BOLD, 12);
+    Filters filter = new Filters();
+    private Tool selectedTool;
     private Canvas canvas;
-    private static Workspace instance;
     private Color firstColor = Color.BLACK;
     private Color secondColor = Color.WHITE;
     private HashMap<JButton, Tool> buttonToolMap;
-    private final FileManagement fileManagement = new FileManagement();
-    Filters filter = new Filters();
 
     public Workspace() {
         instance = this;
@@ -42,11 +38,14 @@ public class Workspace extends JFrame {
         setVisible(true);
     }
 
+    public static Workspace getInstance() {
+        return instance;
+    }
 
     private void setupTools() {
-          new Brush(canvas);
-          new Eraser(canvas);
-          new Bucket(canvas);
+        new Brush(canvas);
+        new Eraser(canvas);
+        new Bucket(canvas);
     }
 
     private void setupOptionBar() {
@@ -127,56 +126,11 @@ public class Workspace extends JFrame {
         toolsPanel.add(createTool("Bucket", "bucket.png", Tool.BUCKET), gbc);
 
 
-
-        JPanel firstColorPanel = new JPanel();
-        firstColorPanel.setLayout(new BoxLayout(firstColorPanel, BoxLayout.Y_AXIS));
-        JButton firstColorButton = new JButton();
-        firstColorButton.setBackground(firstColor);
-        firstColorButton.setPreferredSize(new Dimension(30,30));
-        firstColorButton.setMaximumSize(firstColorButton.getPreferredSize());
-        firstColorButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel firstColorLabel = new JLabel("Color 1");
-        firstColorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        firstColorPanel.add(firstColorButton);
-        firstColorPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        firstColorPanel.add(firstColorLabel);
-
-
-        firstColorButton.addActionListener(e -> {
-            firstColor = JColorChooser.showDialog(null, "Choose a first color", firstColor);
-            firstColorButton.setBackground(firstColor);
-            canvas.updateCanvasColors();
-        });
-
         setGbc(3, 0, gbc);
-        toolsPanel.add(firstColorPanel, gbc);
-
-        JPanel secondColorPanel = new JPanel();
-        secondColorPanel.setLayout(new BoxLayout(secondColorPanel, BoxLayout.Y_AXIS));
-
-        JButton secondColorButton = new JButton();
-        secondColorButton.setBackground(secondColor);
-        secondColorButton.setPreferredSize(new Dimension(30,30));
-        secondColorButton.setMaximumSize(secondColorButton.getPreferredSize());
-        secondColorButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel secondColorLabel = new JLabel("Color 2");
-        secondColorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        secondColorPanel.add(secondColorButton);
-        secondColorPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        secondColorPanel.add(secondColorLabel);
-
-        secondColorButton.addActionListener(e -> {
-            secondColor = JColorChooser.showDialog(null, "Choose a second color", secondColor);
-            secondColorButton.setBackground(secondColor);
-            canvas.updateCanvasColors();
-        });
+        toolsPanel.add(setupColorPanel("Color 1", firstColor), gbc);
 
         setGbc(4, 0, gbc);
-        toolsPanel.add(secondColorPanel, gbc);
+        toolsPanel.add(setupColorPanel("Color 2", secondColor), gbc);
 
 
         setGbc(5, 0, gbc);
@@ -184,8 +138,8 @@ public class Workspace extends JFrame {
         sliderPanel.setLayout(new BoxLayout(sliderPanel, BoxLayout.Y_AXIS));
 
         JSlider slider = new JSlider(1, 50, canvas.getStroke());
-        slider.setPreferredSize(new Dimension(100, 30));
-        JLabel sliderLabel = new JLabel("Size: "+slider.getValue());
+        slider.setPreferredSize(new Dimension(150, 30));
+        JLabel sliderLabel = new JLabel("Size: " + slider.getValue());
 
         sliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         sliderLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -211,16 +165,21 @@ public class Workspace extends JFrame {
     }
 
     private JPanel createTool(String toolName, String iconPath, Tool toolType) {
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panel.setMaximumSize(new Dimension(50, 50));
+
         JLabel label = new JLabel(toolName);
-        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setFont(font);
+        label.setVerticalAlignment(JLabel.CENTER);
         URL resource = getClass().getClassLoader().getResource(iconPath);
         assert resource != null;
         ImageIcon icon = new ImageIcon(resource);
+
         JButton button = new JButton(icon);
-        buttonToolMap.put(button,toolType);
+        buttonToolMap.put(button, toolType);
         button.setFocusable(false);
         button.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         button.setContentAreaFilled(false);
@@ -228,7 +187,39 @@ public class Workspace extends JFrame {
         button.addActionListener(this::actionPerformed);
         panel.add(button);
         panel.add(label);
+
         return panel;
+    }
+
+    private JPanel setupColorPanel(String colorName, Color colorToChange) {
+
+        JPanel colorPanel = new JPanel();
+        Button button = new Button();
+        colorPanel.setLayout(new BoxLayout(colorPanel, BoxLayout.Y_AXIS));
+        button.setBackground(colorToChange);
+        button.setPreferredSize(new Dimension(50, 30));
+        button.setMaximumSize(button.getPreferredSize());
+        button.setFocusable(false);
+
+        button.addActionListener(e -> {
+            Color newColor = JColorChooser.showDialog(null, "Choose a color", colorToChange);
+            if (newColor != null) {
+                button.setBackground(newColor);
+                updateColor(colorName.equals("Color 1"), newColor);
+            }
+        });
+
+        JLabel label = new JLabel(colorName);
+        label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        label.setFont(font);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setHorizontalAlignment(JLabel.CENTER);
+
+        colorPanel.add(button);
+        colorPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        colorPanel.add(label);
+
+        return colorPanel;
     }
 
 
@@ -244,13 +235,22 @@ public class Workspace extends JFrame {
         return secondColor;
     }
 
+    public void updateColor(boolean isFirstColor, Color newColor) {
+        if (isFirstColor) {
+            this.firstColor = newColor;
+        } else {
+            this.secondColor = newColor;
+        }
+        canvas.updateCanvasColors(firstColor, secondColor);
+    }
 
-    public void setGbc(int col, int row, GridBagConstraints gbc){
+
+    public void setGbc(int col, int row, GridBagConstraints gbc) {
         gbc.gridx = col;
         gbc.gridy = row;
     }
 
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
         selectedTool = buttonToolMap.get(e.getSource());
         JButton selectedToolButton = (JButton) e.getSource();
         for (JButton button : buttonToolMap.keySet()) {
@@ -262,8 +262,9 @@ public class Workspace extends JFrame {
         }
     }
 
-    public static Workspace getInstance() {
-        return instance;
+    public enum Tool {
+        BRUSH, ERASER, BUCKET
     }
+
 
 }

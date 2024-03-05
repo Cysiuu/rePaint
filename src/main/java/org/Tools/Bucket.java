@@ -59,7 +59,7 @@ public class Bucket implements MouseListener, MouseMotionListener {
 
     }
 
-    private void fill(MouseEvent e){
+    private void fill(MouseEvent e) {
         if (Workspace.getInstance().getSelectedTool() == Workspace.Tool.BUCKET) {
             int x = e.getX();
             int y = e.getY();
@@ -71,8 +71,9 @@ public class Bucket implements MouseListener, MouseMotionListener {
 
         }
     }
+
     public void floodFill(int x, int y, Color targetColor, Color replacementColor) {
-           BufferedImage image = canvas.getImage();
+        BufferedImage image = canvas.getImage();
 
         if (targetColor.equals(replacementColor)) {
             return;

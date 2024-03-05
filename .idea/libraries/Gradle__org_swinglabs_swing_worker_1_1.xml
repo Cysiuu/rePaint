@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: org.swinglabs:swing-worker:1.1" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="org.swinglabs" artifactId="swing-worker" version="1.1" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.swinglabs/swing-worker/1.1/2392206f318ef3af02f8e8a30b2963c253a70390/swing-worker-1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
