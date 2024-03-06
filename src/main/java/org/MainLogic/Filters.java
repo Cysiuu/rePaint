@@ -45,4 +45,5 @@ public class Filters {
             Canvas.getInstance().setImage(image);
         }
     }
+
 }

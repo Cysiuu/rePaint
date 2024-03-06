@@ -31,7 +31,6 @@ public class FileManagement {
             try {
                 BufferedImage image = ImageIO.read(file);
                 Canvas.getInstance().setImage(image);
-                Canvas.getInstance().repaint();
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(frame, "Error opening the file", "Error", JOptionPane.ERROR_MESSAGE);
             }

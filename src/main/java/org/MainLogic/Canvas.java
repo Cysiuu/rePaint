@@ -32,6 +32,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
     private void initializeCanvas(int width, int height) {
         instance = this;
+        setPreferredSize(new Dimension(width+50, height+50));
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = image.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -62,7 +63,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
                     resizeCanvas(newWidth, newHeight);
                     mouseX += dx;
                     mouseY += dy;
-                    button.setBounds(image.getWidth(), image.getHeight(), 10, 10);
+                    button.setBounds(newWidth, newHeight, 10, 10);
                 }
             }
         });
@@ -82,7 +83,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void resizeCanvas(int newWidth, int newHeight) {
-
         BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = newImage.createGraphics();
         g.setColor(Color.WHITE);
@@ -93,9 +93,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g2d = image.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         updateCanvasProperties();
-        button.setBounds(newWidth, newHeight, 10, 10);
-        repaint();
-
     }
 
     public void clearCanvas() {
@@ -107,14 +104,15 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g2d.setPaint(firstColor);
         g2d.setStroke(stroke);
         updateCanvasProperties();
-        repaint();
     }
 
     private void updateCanvasProperties() {
         g2d.setColor(firstColor);
         g2d.setStroke(stroke);
         button.setBounds(image.getWidth(), image.getHeight(), 10, 10);
-
+        setPreferredSize(new Dimension(image.getWidth()+20, image.getHeight()+20));
+        revalidate();
+        repaint();
     }
 
     @Override

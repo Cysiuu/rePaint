@@ -10,12 +10,13 @@ import java.awt.event.MouseMotionListener;
 
 public class Eraser implements MouseMotionListener, MouseListener {
     private final Canvas canvas;
-
+    Graphics2D g2d;
     int lastXPositionOfCursor, lastYPositionOfCursor;
 
     public Eraser(Canvas canvas) {
         this.canvas = canvas;
         canvas.addMouseMotionListener(this);
+        canvas.addMouseListener(this);
     }
 
     @Override
@@ -51,7 +52,6 @@ public class Eraser implements MouseMotionListener, MouseListener {
     }
 
     private void draw(MouseEvent e) {
-        Graphics2D g2d;
         if (Workspace.getInstance().getSelectedTool() == Workspace.Tool.ERASER) {
             g2d = canvas.getG2d();
             g2d.setPaint(Workspace.getInstance().getSecondColor());

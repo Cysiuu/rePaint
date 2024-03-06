@@ -12,17 +12,17 @@ public class Brush implements MouseMotionListener, MouseListener {
     private final Canvas canvas;
     Graphics2D g2d;
 
-    int lastX, lastY;
+    int lastXPositionOfCursor, lastYPositionOfCursor;
 
     public Brush(Canvas canvas) {
         this.canvas = canvas;
         canvas.addMouseMotionListener(this);
+        canvas.addMouseListener(this);
         g2d = canvas.getG2d();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        draw(e);
     }
 
     @Override
@@ -36,8 +36,8 @@ public class Brush implements MouseMotionListener, MouseListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        lastX = e.getX();
-        lastY = e.getY();
+        lastXPositionOfCursor = e.getX();
+        lastYPositionOfCursor = e.getY();
     }
 
     @Override
@@ -56,10 +56,10 @@ public class Brush implements MouseMotionListener, MouseListener {
         if (Workspace.getInstance().getSelectedTool() == Workspace.Tool.BRUSH) {
             g2d = canvas.getG2d();
             g2d.setPaint(Workspace.getInstance().getFirstColor());
-            g2d.drawLine(lastX, lastY, e.getX(), e.getY());
+            g2d.drawLine(lastXPositionOfCursor, lastYPositionOfCursor, e.getX(), e.getY());
             canvas.repaint();
-            lastX = e.getX();
-            lastY = e.getY();
+            lastXPositionOfCursor = e.getX();
+            lastYPositionOfCursor = e.getY();
         }
     }
 

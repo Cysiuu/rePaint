@@ -29,13 +29,14 @@ public class Workspace extends JFrame {
     public Workspace() {
         instance = this;
         setTitle(fileManagement.updateTitle());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1366, 768);
         setupCanvas();
         setupOptionBar();
         setupToolBar();
         setupTools();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+
     }
 
     public static Workspace getInstance() {
@@ -46,6 +47,20 @@ public class Workspace extends JFrame {
         new Brush(canvas);
         new Eraser(canvas);
         new Bucket(canvas);
+    }
+
+    private void setupCanvas() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        canvas = new Canvas();
+        panel.add(canvas, BorderLayout.CENTER);
+
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        add(scrollPane);
+
     }
 
     private void setupOptionBar() {
@@ -91,23 +106,18 @@ public class Workspace extends JFrame {
         menuBar.add(Filters);
     }
 
-
-    private void setupCanvas() {
-        canvas = new Canvas();
-        add(canvas);
-
-    }
-
     private void setupToolBar() {
         add(toolBar, BorderLayout.NORTH);
         setupToolsPanel();
     }
 
     private void setupToolsPanel() {
+        JPanel toolsPanelWrapper = new JPanel();
+        toolsPanelWrapper.setLayout(new BorderLayout());
+        toolsPanelWrapper.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         buttonToolMap = new HashMap<>();
         JPanel toolsPanel = new JPanel();
-        toolsPanel.setBackground(UIManager.getColor("Panel.background"));
 
         toolsPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -160,7 +170,8 @@ public class Workspace extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         toolsPanel.add(Box.createHorizontalGlue(), gbc);
 
-        this.add(toolsPanel, BorderLayout.NORTH);
+        toolsPanelWrapper.add(toolsPanel, BorderLayout.WEST);
+        toolBar.add(toolsPanelWrapper, BorderLayout.NORTH);
 
     }
 
