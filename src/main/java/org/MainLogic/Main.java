@@ -14,7 +14,7 @@ public class Main {
             UIManager.setLookAndFeel(new MaterialLookAndFeel(new MaterialLiteTheme()));
             new Workspace();
         } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
+            System.out.println("UnsupportedLookAndFeelException");
         }
 
     }

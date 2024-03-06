@@ -7,11 +7,16 @@ import org.Tools.Eraser;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.net.URL;
 import java.util.HashMap;
 
 
 public class Workspace extends JFrame {
+    public enum Tool {
+        BRUSH, ERASER, BUCKET
+    }
     private static Workspace instance;
     private final JMenuBar menuBar = new JMenuBar();
     private final JToolBar toolBar = new JToolBar();
@@ -34,10 +39,13 @@ public class Workspace extends JFrame {
         setupOptionBar();
         setupToolBar();
         setupTools();
+        setupBottomParametersBar();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
     }
+
+
 
     public static Workspace getInstance() {
         return instance;
@@ -233,6 +241,37 @@ public class Workspace extends JFrame {
         return colorPanel;
     }
 
+    private void setupBottomParametersBar() {
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
+        JLabel coordinates = new JLabel("X: " + "Y: ");
+         canvas.addMouseMotionListener(new MouseMotionAdapter() {
+             public void mouseMoved(MouseEvent e) {
+                 coordinates.setText(updateMouseCoordinatesDisplay(e));
+             }
+             public void mouseDragged(MouseEvent e) {
+                 coordinates.setText(updateMouseCoordinatesDisplay(e));
+             }
+         });
+
+        coordinates.setPreferredSize(new Dimension(100, 15));
+        coordinates.setFont(font);
+        bottomPanel.add(coordinates);
+
+        bottomPanel.add(Box.createHorizontalGlue());
+        add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    private String updateMouseCoordinatesDisplay(MouseEvent e) {
+        if (e.getX() < canvas.getImage().getWidth() && e.getY() < canvas.getImage().getHeight()) {
+            return "X: " + e.getX() + " Y: " + e.getY();
+        } else {
+            return ("X:  Y: ");
+        }
+    }
+
 
     public Tool getSelectedTool() {
         return selectedTool;
@@ -272,10 +311,4 @@ public class Workspace extends JFrame {
             }
         }
     }
-
-    public enum Tool {
-        BRUSH, ERASER, BUCKET
-    }
-
-
 }
