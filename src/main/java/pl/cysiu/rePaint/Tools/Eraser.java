@@ -1,7 +1,7 @@
-package org.Tools;
+package pl.cysiu.rePaint.Tools;
 
-import org.MainLogic.Canvas;
-import org.MainLogic.Workspace;
+import pl.cysiu.rePaint.MainLogic.Canvas;
+import pl.cysiu.rePaint.MainLogic.Workspace;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -9,7 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public class Eraser implements MouseMotionListener, MouseListener {
-    private final Canvas canvas;
+    private final pl.cysiu.rePaint.MainLogic.Canvas canvas;
     Graphics2D g2d;
     int lastXPositionOfCursor, lastYPositionOfCursor;
 

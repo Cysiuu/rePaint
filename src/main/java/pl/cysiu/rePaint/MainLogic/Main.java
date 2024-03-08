@@ -1,4 +1,4 @@
-package org.MainLogic;
+package pl.cysiu.rePaint.MainLogic;
 
 import mdlaf.MaterialLookAndFeel;
 import mdlaf.themes.MaterialLiteTheme;

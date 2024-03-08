@@ -1,4 +1,4 @@
-package org.MainLogic;
+package pl.cysiu.rePaint.MainLogic;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,6 +32,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
     private void initializeCanvas(int width, int height) {
         instance = this;
+        setBackground(new Color(205,215,230));
         setPreferredSize(new Dimension(width+50, height+50));
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = image.createGraphics();
@@ -107,6 +108,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void updateCanvasProperties() {
+        setBackground(new Color(205,215,230));
         g2d.setColor(firstColor);
         g2d.setStroke(stroke);
         button.setBounds(image.getWidth(), image.getHeight(), 10, 10);

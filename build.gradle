@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'org.example'
@@ -7,6 +8,20 @@ version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+}
+
+shadowJar {
+    archiveBaseName.set('rePaint')
+    archiveVersion.set('1.0-SNAPSHOT')
+    archiveClassifier.set('')
+
+    manifest {
+        attributes 'Main-Class': 'org.MainLogic.Main'
+    }
+
+    mergeServiceFiles {
+        include 'META-INF/services/javax.swing.LookAndFeel'
+    }
 }
 
 dependencies {

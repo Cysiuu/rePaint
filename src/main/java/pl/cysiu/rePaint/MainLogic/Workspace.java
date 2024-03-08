@@ -1,8 +1,8 @@
-package org.MainLogic;
+package pl.cysiu.rePaint.MainLogic;
 
-import org.Tools.Brush;
-import org.Tools.Bucket;
-import org.Tools.Eraser;
+import pl.cysiu.rePaint.Tools.Brush;
+import pl.cysiu.rePaint.Tools.Bucket;
+import pl.cysiu.rePaint.Tools.Eraser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,10 +42,7 @@ public class Workspace extends JFrame {
         setupBottomParametersBar();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-
     }
-
-
 
     public static Workspace getInstance() {
         return instance;
@@ -249,29 +246,28 @@ public class Workspace extends JFrame {
         JLabel coordinates = new JLabel("X: " + "Y: ");
          canvas.addMouseMotionListener(new MouseMotionAdapter() {
              public void mouseMoved(MouseEvent e) {
-                 coordinates.setText(updateMouseCoordinatesDisplay(e));
+                 coordinates.setText(mouseCoordinates(e));
              }
              public void mouseDragged(MouseEvent e) {
-                 coordinates.setText(updateMouseCoordinatesDisplay(e));
+                 coordinates.setText(mouseCoordinates(e));
              }
          });
 
         coordinates.setPreferredSize(new Dimension(100, 15));
         coordinates.setFont(font);
-        bottomPanel.add(coordinates);
 
+        bottomPanel.add(coordinates);
         bottomPanel.add(Box.createHorizontalGlue());
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    private String updateMouseCoordinatesDisplay(MouseEvent e) {
+    private String mouseCoordinates(MouseEvent e) {
         if (e.getX() < canvas.getImage().getWidth() && e.getY() < canvas.getImage().getHeight()) {
             return "X: " + e.getX() + " Y: " + e.getY();
         } else {
             return ("X:  Y: ");
         }
     }
-
 
     public Tool getSelectedTool() {
         return selectedTool;

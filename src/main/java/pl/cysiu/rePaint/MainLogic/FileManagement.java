@@ -1,4 +1,4 @@
-package org.MainLogic;
+package pl.cysiu.rePaint.MainLogic;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
