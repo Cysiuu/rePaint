@@ -15,6 +15,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     public Color firstColor = Color.BLACK;
     public Color secondColor = Color.WHITE;
     private BufferedImage image;
+    private BufferedImage tempImage;
     private Graphics2D g2d;
     private boolean resizing = false;
     private int mouseX, mouseY;
@@ -35,6 +36,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         setBackground(new Color(205,215,230));
         setPreferredSize(new Dimension(width+50, height+50));
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        tempImage = image;
         g2d = image.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(Color.WHITE);
@@ -84,16 +86,28 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
 
     private void resizeCanvas(int newWidth, int newHeight) {
-        BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = newImage.createGraphics();
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, newWidth, newHeight);
-        g.drawImage(image, 0, 0, null);
-        g.dispose();
-        image = newImage;
-        g2d = image.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        updateCanvasProperties();
+        if(newWidth > tempImage.getWidth() || newHeight > tempImage.getHeight()){
+            BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = newImage.createGraphics();
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, newWidth, newHeight);
+            g.drawImage(tempImage, 0, 0, null);
+            g.dispose();
+            image = newImage;
+            g2d = image.createGraphics();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            updateCanvasProperties();
+        }
+        else{
+            BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = newImage.createGraphics();
+            g.drawImage(tempImage, 0, 0, null);
+            g.dispose();
+            image = newImage;
+            g2d = image.createGraphics();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            updateCanvasProperties();
+        }
     }
 
     public void clearCanvas() {
@@ -126,6 +140,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     //Methods not used for implementation but required by the interface
     @Override
     public void mousePressed(MouseEvent e) {
+        setTempImage(image);
     }
 
     @Override
@@ -134,6 +149,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        setTempImage(image);
     }
 
     @Override
@@ -168,9 +184,13 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     public BufferedImage getImage() {
         return image;
     }
+    public void setTempImage(BufferedImage tempImage) {
+        this.tempImage = tempImage;
+    }
 
     public void setImage(BufferedImage image) {
         this.image = image;
+        this.tempImage = image;
         g2d = image.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         updateCanvasProperties();
