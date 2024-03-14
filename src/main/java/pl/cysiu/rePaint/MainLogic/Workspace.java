@@ -9,14 +9,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 
 
 public class Workspace extends JFrame {
-    public enum Tool {
-        BRUSH, ERASER, BUCKET
-    }
     private static Workspace instance;
     private final JMenuBar menuBar = new JMenuBar();
     private final JToolBar toolBar = new JToolBar();
@@ -30,7 +30,6 @@ public class Workspace extends JFrame {
     private Color firstColor = Color.BLACK;
     private Color secondColor = Color.WHITE;
     private HashMap<JButton, Tool> buttonToolMap;
-
     public Workspace() {
         instance = this;
         setTitle(fileManagement.updateTitle());
@@ -70,6 +69,73 @@ public class Workspace extends JFrame {
 
     private void setupOptionBar() {
         setJMenuBar(menuBar);
+        JMenu fileMenu = getFileMenu();
+
+        JMenu Filters = new JMenu("Filter");
+        JMenuItem grayscale = new JMenuItem("Grayscale");
+        JMenuItem sepia = new JMenuItem("Sepia");
+
+        Filters.add(grayscale);
+        Filters.add(sepia);
+
+        grayscale.addActionListener(e -> filter.grayScaleFilter("grayscale"));
+
+        sepia.addActionListener(e -> filter.sepiaFilter("sepia"));
+
+        JMenu Images = new JMenu("Image");
+        JMenuItem generateAiImageItem = new JMenuItem("Generate AI Image");
+
+        Images.add(generateAiImageItem);
+
+        generateAiImageItem.addActionListener(e -> {
+
+
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            panel.setPreferredSize(new Dimension(300, 200));
+            panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 50));
+
+            JLabel descriptionLabel = new JLabel("Description of image");
+            descriptionLabel.setFont(font);
+            descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            descriptionLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            panel.add(descriptionLabel);
+
+
+            JScrollPane scrollPane = new JScrollPane();
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setPreferredSize(new Dimension(300, 100));
+
+            JTextArea descriptionField = new JTextArea();
+            descriptionField.setLineWrap(true);
+            descriptionField.setFont(font);
+            descriptionField.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            scrollPane.setViewportView(descriptionField);
+
+
+            panel.add(scrollPane);
+
+
+            int result = JOptionPane.showConfirmDialog(
+                    this,
+                    panel,
+                    "Enter Description",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (result == JOptionPane.OK_OPTION) {
+                String description = descriptionField.getText();
+                if (description != null && !description.isEmpty()) generateAiImage(description);
+            }
+        });
+
+        menuBar.add(fileMenu);
+        menuBar.add(Filters);
+        menuBar.add(Images);
+    }
+
+    private JMenu getFileMenu() {
         JMenu fileMenu = new JMenu("File");
 
         JMenuItem newMenuItem = new JMenuItem("New");
@@ -95,20 +161,7 @@ public class Workspace extends JFrame {
         fileMenu.add(newMenuItem);
         fileMenu.add(openMenuItem);
         fileMenu.add(saveMenuItem);
-
-        JMenu Filters = new JMenu("Filter");
-        JMenuItem grayscale = new JMenuItem("Grayscale");
-        JMenuItem sepia = new JMenuItem("Sepia");
-
-        Filters.add(grayscale);
-        Filters.add(sepia);
-
-        grayscale.addActionListener(e -> filter.grayScaleFilter("grayscale"));
-
-        sepia.addActionListener(e -> filter.sepiaFilter("sepia"));
-
-        menuBar.add(fileMenu);
-        menuBar.add(Filters);
+        return fileMenu;
     }
 
     private void setupToolBar() {
@@ -241,17 +294,18 @@ public class Workspace extends JFrame {
     private void setupBottomParametersBar() {
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         JLabel coordinates = new JLabel("X: " + "Y: ");
-         canvas.addMouseMotionListener(new MouseMotionAdapter() {
-             public void mouseMoved(MouseEvent e) {
-                 coordinates.setText(mouseCoordinates(e));
-             }
-             public void mouseDragged(MouseEvent e) {
-                 coordinates.setText(mouseCoordinates(e));
-             }
-         });
+        canvas.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseMoved(MouseEvent e) {
+                coordinates.setText(mouseCoordinates(e));
+            }
+
+            public void mouseDragged(MouseEvent e) {
+                coordinates.setText(mouseCoordinates(e));
+            }
+        });
 
         coordinates.setPreferredSize(new Dimension(100, 15));
         coordinates.setFont(font);
@@ -290,7 +344,6 @@ public class Workspace extends JFrame {
         canvas.updateCanvasColors(firstColor, secondColor);
     }
 
-
     public void setGbc(int col, int row, GridBagConstraints gbc) {
         gbc.gridx = col;
         gbc.gridy = row;
@@ -307,4 +360,42 @@ public class Workspace extends JFrame {
             }
         }
     }
+
+    private void generateAiImage(String description) {
+        JDialog dialog = new JDialog(this, "Generating AI Image", false);
+        dialog.setLayout(new FlowLayout());
+        dialog.setSize(300, 100);
+        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.setLocationRelativeTo(this);
+
+        JLabel label = new JLabel("Generating the image...");
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setVerticalAlignment(JLabel.CENTER);
+        dialog.add(label);
+
+
+        dialog.setVisible(true);
+        new Thread(() -> {
+            try {
+                BufferedImage image = ImageGeneratorAPI.getInstance().generateImage(description);
+                SwingUtilities.invokeLater(() -> {
+                    Canvas.getInstance().setImage(image);
+                    dialog.dispose();
+                });
+            } catch (IOException | URISyntaxException | InterruptedException e) {
+                System.out.println("Error generating the image");
+                dialog.dispose();
+            }
+        }).start();
+
+    }
+
+    public Component getFrame() {
+        return this;
+    }
+
+    public enum Tool {
+        BRUSH, ERASER, BUCKET
+    }
+
 }
