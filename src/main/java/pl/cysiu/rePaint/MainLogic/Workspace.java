@@ -6,9 +6,7 @@ import pl.cysiu.rePaint.Tools.Eraser;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -39,8 +37,10 @@ public class Workspace extends JFrame {
         setupToolBar();
         setupTools();
         setupBottomParametersBar();
+        setupShorcuts();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+
     }
 
     public static Workspace getInstance() {
@@ -54,6 +54,7 @@ public class Workspace extends JFrame {
     }
 
     private void setupCanvas() {
+
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -66,6 +67,7 @@ public class Workspace extends JFrame {
         add(scrollPane);
 
     }
+
 
     private void setupOptionBar() {
         setJMenuBar(menuBar);
@@ -129,6 +131,7 @@ public class Workspace extends JFrame {
                 if (description != null && !description.isEmpty()) generateAiImage(description);
             }
         });
+
 
         menuBar.add(fileMenu);
         menuBar.add(Filters);
@@ -244,6 +247,7 @@ public class Workspace extends JFrame {
         label.setFont(font);
         label.setVerticalAlignment(JLabel.CENTER);
         URL resource = getClass().getClassLoader().getResource(iconPath);
+
         assert resource != null;
         ImageIcon icon = new ImageIcon(resource);
 
@@ -314,6 +318,20 @@ public class Workspace extends JFrame {
         bottomPanel.add(Box.createHorizontalGlue());
         add(bottomPanel, BorderLayout.SOUTH);
     }
+
+    private void setupShorcuts(){
+
+        // Ctrl + z - Undo
+        canvas.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK), "undo");
+        canvas.getActionMap().put("undo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                canvas.undo();
+            }
+        });
+
+    }
+
 
     private String mouseCoordinates(MouseEvent e) {
         if (e.getX() < canvas.getImage().getWidth() && e.getY() < canvas.getImage().getHeight()) {

@@ -16,6 +16,5 @@ public class Main {
         } catch (UnsupportedLookAndFeelException e) {
             System.out.println("UnsupportedLookAndFeelException");
         }
-
     }
 }

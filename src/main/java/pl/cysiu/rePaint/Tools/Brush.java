@@ -7,10 +7,11 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 public class Brush implements MouseMotionListener, MouseListener {
     private final Canvas canvas;
-    Graphics2D g2d;
+    private Graphics2D g2d;
 
     int lastXPositionOfCursor, lastYPositionOfCursor;
 
@@ -18,15 +19,16 @@ public class Brush implements MouseMotionListener, MouseListener {
         this.canvas = canvas;
         canvas.addMouseMotionListener(this);
         canvas.addMouseListener(this);
-        g2d = canvas.getG2d();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
     }
 
+
     @Override
     public void mouseClicked(MouseEvent e) {
+        drawDot(e);
     }
 
     @Override
@@ -60,6 +62,19 @@ public class Brush implements MouseMotionListener, MouseListener {
             canvas.repaint();
             lastXPositionOfCursor = e.getX();
             lastYPositionOfCursor = e.getY();
+        }
+    }
+
+    private void drawDot(MouseEvent e) {
+        if (Workspace.getInstance().getSelectedTool() == Workspace.Tool.BRUSH) {
+            g2d = canvas.getG2d();
+            g2d.setPaint(Workspace.getInstance().getFirstColor());
+            g2d.fillOval(
+                    lastXPositionOfCursor - canvas.getStroke()/2,
+                    lastYPositionOfCursor - canvas.getStroke()/2,
+                    canvas.getStroke(),
+                    canvas.getStroke());
+            canvas.repaint();
         }
     }
 

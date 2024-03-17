@@ -21,7 +21,6 @@ public class Eraser implements MouseMotionListener, MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        draw(e);
     }
 
     @Override
@@ -31,6 +30,7 @@ public class Eraser implements MouseMotionListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        drawDot(e);
     }
 
     @Override
@@ -59,6 +59,19 @@ public class Eraser implements MouseMotionListener, MouseListener {
             canvas.repaint();
             lastXPositionOfCursor = e.getX();
             lastYPositionOfCursor = e.getY();
+        }
+    }
+
+    private void drawDot(MouseEvent e) {
+        if (Workspace.getInstance().getSelectedTool() == Workspace.Tool.ERASER) {
+            g2d = canvas.getG2d();
+            g2d.setPaint(Workspace.getInstance().getSecondColor());
+            g2d.fillOval(
+                    lastXPositionOfCursor - canvas.getStroke()/2,
+                    lastYPositionOfCursor - canvas.getStroke()/2,
+                    canvas.getStroke(),
+                    canvas.getStroke());
+            canvas.repaint();
         }
     }
 }
