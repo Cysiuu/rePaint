@@ -19,6 +19,7 @@ public class Filters {
                 }
             }
             Canvas.getInstance().setImage(image);
+            Canvas.getInstance().captureCanvasState();
         }
     }
 
@@ -43,6 +44,7 @@ public class Filters {
                 }
             }
             Canvas.getInstance().setImage(image);
+            Canvas.getInstance().captureCanvasState();
         }
     }
 

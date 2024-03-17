@@ -28,12 +28,16 @@ public class FileManagement {
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             pathToActualFile = file.toPath();
+
             try {
                 BufferedImage image = ImageIO.read(file);
                 Canvas.getInstance().setImage(image);
                 Canvas.getInstance().clearStacksForRedoAndUndo();
-            } catch (IOException e) {
+                Canvas.getInstance().captureCanvasState();
+            } catch (IOException | NullPointerException e) {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(frame, "Error opening the file", "Error", JOptionPane.ERROR_MESSAGE);
+                NewFile(frame);
             }
         }
     }

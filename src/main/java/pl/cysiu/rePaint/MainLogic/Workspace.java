@@ -330,6 +330,15 @@ public class Workspace extends JFrame {
             }
         });
 
+        // Ctrl + y - Redo
+        canvas.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK), "redo");
+        canvas.getActionMap().put("redo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                canvas.redo();
+            }
+        });
+
     }
 
 
@@ -398,6 +407,7 @@ public class Workspace extends JFrame {
                 BufferedImage image = ImageGeneratorAPI.getInstance().generateImage(description);
                 SwingUtilities.invokeLater(() -> {
                     Canvas.getInstance().setImage(image);
+                    Canvas.getInstance().clearStacksForRedoAndUndo();
                     dialog.dispose();
                 });
             } catch (IOException | URISyntaxException | InterruptedException e) {

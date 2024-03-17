@@ -23,6 +23,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     private Stroke stroke = new BasicStroke(strokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
     private Stack<BufferedImage> undoStack = new Stack<>();
+    private Stack<BufferedImage> redoStack = new Stack<>();
 
 
     public Canvas() {
@@ -124,6 +125,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g2d.setStroke(stroke);
         clearStacksForRedoAndUndo();
         updateCanvasProperties();
+
     }
 
     private void updateCanvasProperties() {
@@ -212,16 +214,28 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g2.drawImage(image, 0, 0, null);
         g2.dispose();
         undoStack.push(copyOfImage);
+
     }
 
     //Shortcuts methods
 
     public void clearStacksForRedoAndUndo() {
         undoStack.clear();
+        redoStack.clear();
     }
+
     public void undo() {
         if (!undoStack.isEmpty()) {
-            setImage(undoStack.pop());
+            redoStack.push(image);
+            image = undoStack.pop();
+            setImage(image);
+        }
+    }
+    public void redo(){
+        if (!redoStack.isEmpty()) {
+            undoStack.push(image);
+            image = redoStack.pop();
+            setImage(image);
         }
     }
 
