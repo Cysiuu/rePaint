@@ -26,8 +26,10 @@ public class Filters {
     public void sepiaFilter(String filter) {
         BufferedImage image = Canvas.getInstance().getImage();
         if (filter.equals("sepia")) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                for (int y = 0; y < image.getHeight(); y++) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
                     int p = image.getRGB(x, y);
                     int a = (p >> 24) & 0xff;
                     int r = (p >> 16) & 0xff;

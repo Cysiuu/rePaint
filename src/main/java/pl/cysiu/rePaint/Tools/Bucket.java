@@ -22,16 +22,16 @@ public class Bucket implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        try {
-            fill(e);
-        } catch (StackOverflowError error) {
-            System.out.println("StackOverflowError");
-        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
 
+        try {
+            fill(e);
+        } catch (StackOverflowError error) {
+            System.out.println("StackOverflowError");
+        }
     }
 
     @Override
@@ -61,15 +61,18 @@ public class Bucket implements MouseListener, MouseMotionListener {
 
     private void fill(MouseEvent e) {
         if (Workspace.getInstance().getSelectedTool() == Workspace.Tool.BUCKET) {
-            int x = e.getX();
-            int y = e.getY();
-            Color targetColor = new Color(canvas.getImage().getRGB(x, y));
-            Color replacementColor = canvas.firstColor;
-            floodFill(x, y, targetColor, replacementColor);
-            canvas.repaint();
-
-
+            try {
+                int x = e.getX();
+                int y = e.getY();
+                Color targetColor = new Color(canvas.getImage().getRGB(x, y));
+                Color replacementColor = canvas.firstColor;
+                floodFill(x, y, targetColor, replacementColor);
+                canvas.repaint();
+            }
+            catch (Exception exception) {
+                System.out.println("Out of bounds!");
         }
+    }
     }
 
     public void floodFill(int x, int y, Color targetColor, Color replacementColor) {
