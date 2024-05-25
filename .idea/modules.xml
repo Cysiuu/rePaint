@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/rePaint.iml" filepath="$PROJECT_DIR$/rePaint.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rePaint.main.iml" filepath="$PROJECT_DIR$/.idea/modules/rePaint.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rePaint.test.iml" filepath="$PROJECT_DIR$/.idea/modules/rePaint.test.iml" />
     </modules>
   </component>
 </project>
