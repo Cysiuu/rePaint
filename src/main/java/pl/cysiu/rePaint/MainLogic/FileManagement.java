@@ -2,12 +2,15 @@ package pl.cysiu.rePaint.MainLogic;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
 public class FileManagement {
+
+    String[] fileTypes = {"jpg", "jpeg", "png", "gif", "bmp"};
 
     private final JFileChooser fileChooser = new JFileChooser();
     private Path pathToActualFile;
@@ -24,16 +27,41 @@ public class FileManagement {
     }
 
     public void openFile(JFrame frame) {
-        int result = fileChooser.showOpenDialog(frame);
+        JFileChooser frameToChooseFile = new JFileChooser();
+
+        FileFilter filter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.isDirectory()) {
+                    return true;
+                }
+                String extension = f.getName().substring(f.getName().lastIndexOf(".") + 1);
+                for (String fileType : fileTypes) {
+                    if (extension.equalsIgnoreCase(fileType)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public String getDescription() {
+                return "Image files";
+            }
+        };
+
+        frameToChooseFile.setFileFilter(filter);
+        int result = frameToChooseFile.showOpenDialog(frame);
+
         if (result == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
+            File file = frameToChooseFile.getSelectedFile();
             pathToActualFile = file.toPath();
 
             try {
                 BufferedImage image = ImageIO.read(file);
+                Canvas.getInstance().captureCanvasState();
                 Canvas.getInstance().setImage(image);
                 Canvas.getInstance().clearStacksForRedoAndUndo();
-                Canvas.getInstance().captureCanvasState();
             } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(frame, "Error opening the file", "Error", JOptionPane.ERROR_MESSAGE);
