@@ -1,5 +1,7 @@
 package pl.cysiu.rePaint.MainLogic;
 
+import pl.cysiu.rePaint.Tools.Brush;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -85,7 +87,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
             public void mouseReleased(MouseEvent e) {
                 resizing = false;
-
             }
         });
         add(button);
@@ -117,6 +118,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
 
 
+
     public void clearCanvas() {
         this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = image.createGraphics();
@@ -125,8 +127,10 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
         g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
         g2d.setPaint(firstColor);
         g2d.setStroke(stroke);
+        this.backgroundRememberImage = image;
         clearStacksForRedoAndUndo();
         updateCanvasProperties();
+        new Brush(this);
 
     }
 
@@ -154,12 +158,12 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 
 
     }
-
     @Override
     public void mousePressed(MouseEvent e) {
 
         //If the mouse is pressed inside the canvas, capture the state of the canvas
         if (e.getX() < getImage().getWidth() && e.getY() < getImage().getHeight()) {
+
             captureCanvasState();
         }
     }
@@ -169,7 +173,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
     @Override
     public void mouseDragged(MouseEvent e) {
-
     }
 
     @Override
@@ -220,7 +223,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     }
 
     public void captureCanvasState() {
-
         BufferedImage copyOfImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = copyOfImage.createGraphics();
         g2.drawImage(image, 0, 0, null);

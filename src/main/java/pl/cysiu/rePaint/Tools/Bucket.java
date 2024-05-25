@@ -22,16 +22,16 @@ public class Bucket implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        try {
-            fill(e);
-        } catch (StackOverflowError error) {
-            System.out.println("StackOverflowError");
-        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
 
+        try {
+            fill(e);
+        } catch (StackOverflowError error) {
+            System.out.println("StackOverflowError");
+        }
     }
 
     @Override
@@ -71,9 +71,8 @@ public class Bucket implements MouseListener, MouseMotionListener {
             }
             catch (Exception exception) {
                 System.out.println("Out of bounds!");
-            }
-
         }
+    }
     }
 
     public void floodFill(int x, int y, Color targetColor, Color replacementColor) {
