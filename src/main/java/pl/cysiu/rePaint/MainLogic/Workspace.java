@@ -62,6 +62,8 @@ public class Workspace extends JFrame {
         panel.add(canvas, BorderLayout.CENTER);
 
         JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(18);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(18);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane);
@@ -114,6 +116,8 @@ public class Workspace extends JFrame {
             descriptionField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             scrollPane.setViewportView(descriptionField);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(18);
+            scrollPane.getHorizontalScrollBar().setUnitIncrement(18);
 
 
             panel.add(scrollPane);
@@ -237,7 +241,6 @@ public class Workspace extends JFrame {
     }
 
     private JPanel createTool(String toolName, String iconPath, Tool toolType) {
-
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -246,9 +249,11 @@ public class Workspace extends JFrame {
         JLabel label = new JLabel(toolName);
         label.setFont(font);
         label.setVerticalAlignment(JLabel.CENTER);
-        URL resource = getClass().getClassLoader().getResource(iconPath);
 
-        assert resource != null;
+        URL resource = getClass().getClassLoader().getResource(iconPath);
+        if (resource == null) {
+            throw new IllegalArgumentException("Resource not found: " + iconPath);
+        }
         ImageIcon icon = new ImageIcon(resource);
 
         JButton button = new JButton(icon);
@@ -263,6 +268,7 @@ public class Workspace extends JFrame {
 
         return panel;
     }
+
 
     private JPanel setupColorPanel(String colorName, Color colorToChange) {
 
@@ -406,6 +412,7 @@ public class Workspace extends JFrame {
             try {
                 BufferedImage image = ImageGeneratorAPI.getInstance().generateImage(description);
                 SwingUtilities.invokeLater(() -> {
+                    Canvas.getInstance().captureCanvasState();
                     Canvas.getInstance().setImage(image);
                     Canvas.getInstance().clearStacksForRedoAndUndo();
                     dialog.dispose();

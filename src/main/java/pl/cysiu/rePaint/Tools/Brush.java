@@ -3,22 +3,22 @@ package pl.cysiu.rePaint.Tools;
 import pl.cysiu.rePaint.MainLogic.Canvas;
 import pl.cysiu.rePaint.MainLogic.Workspace;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-
 
 public class Brush implements MouseMotionListener, MouseListener {
     private final Canvas canvas;
     private Graphics2D g2d;
+
     int lastXPositionOfCursor, lastYPositionOfCursor;
 
     public Brush(Canvas canvas) {
         this.canvas = canvas;
         canvas.addMouseMotionListener(this);
         canvas.addMouseListener(this);
-//
     }
 
     @Override
@@ -26,13 +26,15 @@ public class Brush implements MouseMotionListener, MouseListener {
         drawDot(e);
     }
 
+
     @Override
     public void mouseClicked(MouseEvent e) {
+        drawDot(e);
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-            draw(e);
+        draw(e);
     }
 
     @Override
@@ -76,4 +78,6 @@ public class Brush implements MouseMotionListener, MouseListener {
             canvas.repaint();
         }
     }
+
+
 }

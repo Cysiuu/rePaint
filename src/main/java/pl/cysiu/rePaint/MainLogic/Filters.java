@@ -1,10 +1,16 @@
 package pl.cysiu.rePaint.MainLogic;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Filters {
+
     public void grayScaleFilter(String filter) {
-        BufferedImage image = Canvas.getInstance().getImage();
+        BufferedImage image = new BufferedImage(Canvas.getInstance().getImage().getWidth(), Canvas.getInstance().getImage().getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = image.createGraphics();
+        g2d.drawImage(Canvas.getInstance().getImage(), 0, 0, null);
+        g2d.dispose();
+
         if (filter.equals("grayscale")) {
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
@@ -18,13 +24,18 @@ public class Filters {
                     image.setRGB(x, y, p);
                 }
             }
-            Canvas.getInstance().setImage(image);
             Canvas.getInstance().captureCanvasState();
+            Canvas.getInstance().setImage(image);
         }
     }
 
     public void sepiaFilter(String filter) {
-        BufferedImage image = Canvas.getInstance().getImage();
+
+        BufferedImage image = new BufferedImage(Canvas.getInstance().getImage().getWidth(), Canvas.getInstance().getImage().getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = image.createGraphics();
+        g2d.drawImage(Canvas.getInstance().getImage(), 0, 0, null);
+        g2d.dispose();
+
         if (filter.equals("sepia")) {
             int width = image.getWidth();
             int height = image.getHeight();
@@ -45,9 +56,10 @@ public class Filters {
                     image.setRGB(x, y, p);
                 }
             }
-            Canvas.getInstance().setImage(image);
             Canvas.getInstance().captureCanvasState();
+            Canvas.getInstance().setImage(image);
         }
+
     }
 
 }

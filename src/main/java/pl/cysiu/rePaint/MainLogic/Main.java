@@ -2,7 +2,6 @@ package pl.cysiu.rePaint.MainLogic;
 
 import mdlaf.MaterialLookAndFeel;
 import mdlaf.themes.MaterialLiteTheme;
-
 import javax.swing.*;
 import java.awt.*;
 
