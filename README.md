@@ -1,2 +1,2 @@
-A small fun java paint-clone app project with some extra functionalities with theme based on material-ui-swing from <a href="https://github.com/atarw/material-ui-swing">@atarw</a> <br>
-Still in development :)
+A small fun java paint-clone app project with some functionalities with material-ui-swing theme from <a href="https://github.com/atarw/material-ui-swing">@atarw</a> <br>
+For now, not maintained
